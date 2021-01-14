@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post
 from .forms import PostForm
 # Create your views here.
@@ -43,3 +43,37 @@ def create_post(request):
         ctx = {'form': form}
 
         return render(request, template_name='posts/post_form.html', context=ctx)
+
+
+def update_post(request, pk):
+    # Update
+    # 포스트를 수정하는 뷰
+
+    post = get_object_or_404(Post, id=pk)
+    # 고칠려고 받아온 특정한 포스트
+    # 위에꺼랑 Post.objects.get(id=pk)의 차이 : 404 에러 반환 차이/ 위에꺼를 더 많이씀. 에러 핸들링 위해.
+
+    if request.method == "POST":
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            post = form.save()
+
+            return redirect('posts:detail', pk)  # pk대신 post.id도 가능. 왜그런지 생각해보기
+    else:
+        # 그 특정한 포스트 요놈이야라고 명시! 새 객체가 아니라 원래 있던 인스턴스 불러오는 느낌.
+        form = PostForm(instance=post)
+        ctx = {'form': form}
+        return render(request, 'posts/post_form.html', ctx)
+
+
+def delete_post(request, pk):
+    # Delete
+    # 포스트를 삭제하는 뷰
+
+    post = get_object_or_404(Post, pk=pk)
+
+    if request.method == "GET":
+        return redirect('posts:detail', post.id)
+    elif request.method == "POST":
+        post.delete()
+        return redirect('posts:list')
