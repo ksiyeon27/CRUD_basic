@@ -12,7 +12,13 @@
     <p>{{ post.updated_at }}</p>
 
     <a href="{% url 'posts:update' post.id %}">수정하기</a>
+    <form action = "{% url 'posts:delete' post.id %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value = '삭제하기'>
+    </form>
+
     <a href="{% url 'posts:list' %}">리스트로 돌아가기</a>
+
 </body>
 
 </html>

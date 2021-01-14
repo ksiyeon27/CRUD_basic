@@ -34,7 +34,7 @@ def create_post(request):
         # 저장하기 눌렀을 때(POST)
         form = PostForm(request.POST)
         if form.is_valid():
-            post = form.save()  # 저장해서 db에 생성.
+            form.save()  # 저장해서 db에 생성.
             # 사실 할당할 필요 없지만 사용할 일 있으려면 저장.
             return redirect('posts:list')
             # redirect는 url중 한 곳으로 보내겠다는 것. 앱네임:url네임
